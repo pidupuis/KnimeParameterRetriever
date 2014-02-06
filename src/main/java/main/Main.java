@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -19,6 +18,7 @@ import org.jdom2.input.SAXBuilder;
  * 
  * @author pidupuis
  * 
+ * Program which open a KNIME workflow archive, retrieve the parameters and write them properly in a CSV file
  */
 public class Main {
 
@@ -31,23 +31,26 @@ public class Main {
 	public static void main(String[] args) {
 		// RETRIEVE FILE NAME AND PATH
 		if (args.length != 2) {
-			System.out.println("This program needs only two arguments, one for the workflow file path, and the second for the outfile path");
+			System.out
+					.println("This program needs only two arguments, one for the workflow file path, and the second for the outfile path");
 			return;
 		}
 		workflowPathAndName = args[0];
-		if(!new File(workflowPathAndName).exists()) {
-			System.out.println("The workflow file (first argument) does not exists !");
+		if (!new File(workflowPathAndName).exists()) { // If the workflow does
+														// not exists
+			System.out
+					.println("The workflow file (first argument) does not exists !");
 			return;
 		}
 		outfilePathAndName = args[1];
 		try {
 			new FileWriter(outfilePathAndName);
-		}
-		catch (Exception e){
-			System.out.println("The output file (second argument) can not be created !");
+		} catch (Exception e) { // If the output file can not be created
+			System.out
+					.println("The output file (second argument) can not be created !");
 			return;
 		}
-		
+
 		// PREPARE THE VARIABLE TO STORE THE PARAMETERS
 		parameters = new LinkedHashMap<String, ArrayList<String>>();
 
@@ -129,11 +132,11 @@ public class Main {
 		try {
 			FileWriter writer = new FileWriter(outfilePathAndName);
 			for (String s : parameters.keySet()) {
-				writer.append(s);
+				writer.append(s); // Name
 				writer.append(":");
-				writer.append(parameters.get(s).get(0));
+				writer.append(parameters.get(s).get(0)); // Type
 				writer.append(":");
-				writer.append(parameters.get(s).get(1));
+				writer.append(parameters.get(s).get(1)); // Default value
 				writer.append("\n");
 			}
 			writer.flush();
