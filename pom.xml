@@ -5,11 +5,71 @@
 	<artifactId>KnimeParameterRetriever</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
+	<build>
+			<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>main.Main</mainClass>
+						</manifest>
+					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase> <!-- Link assembly:single to the package phase -->
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+
+			</plugin>
+
+			<plugin>
+				<inherited>true</inherited>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.0</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<optimize>true</optimize>
+					<showWarnings>true</showWarnings>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<id>default-jar</id>
+						<phase>none</phase> <!-- Prevent the jar creation to have only the jar with dependencies -->
+					</execution>
+				</executions>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>main.Main</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.jdom</groupId>
-			<artifactId>jdom</artifactId>
-			<version>2.0.2</version>
+			<artifactId>jdom2</artifactId>
+			<version>2.0.5</version>
 		</dependency>
 	</dependencies>
 </project>
