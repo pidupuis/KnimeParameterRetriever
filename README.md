@@ -5,3 +5,5 @@ Java executable which retrieves parameters from a KNIME workflow archive. The CS
 
 <b>Command line execution : </b>
 <blockquote>java -jar /home/toto/Documents/KnimeParameterRetriever.jar /home/toto/Documents/Exemple.zip /home/toto/Documents/test.dat</blockquote>
+
+Download the [lastest release](https://github.com/pidupuis/KnimeParameterRetriever/releases).
