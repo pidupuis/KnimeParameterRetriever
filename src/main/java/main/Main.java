@@ -61,13 +61,14 @@ public class Main {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-
+		
 		// OPEN THE ZIP ARCHIVE TO RETRIEVE ENTRIES
 		Enumeration<? extends ZipEntry> entries = zipFile.entries();
 		while (entries.hasMoreElements()) {
 			ZipEntry entry = entries.nextElement();
 			// SEARCH THE FILE CONTAINING THE PARAMETERS
-			if (entry.getName().contains("workflow.knime")) {
+			
+			if (entry.getName().equals(new File(workflowPathAndName).getName().substring(0, new File(workflowPathAndName).getName().lastIndexOf("."))+"/workflow.knime")) {
 
 				// OPEN THE FILE AS XML FILE
 				SAXBuilder sxb = new SAXBuilder();
@@ -78,6 +79,9 @@ public class Main {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				
+
+				
 
 				// PARSE THE XML FILE
 				racine = document.getRootElement();
@@ -124,8 +128,8 @@ public class Main {
 						break;
 					}
 				}
-			}
 			break;
+			}
 		}
 
 		// WRITE THE PARAMETERS INTO ANOTHER FILE
