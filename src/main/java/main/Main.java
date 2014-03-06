@@ -24,15 +24,19 @@ public class Main {
 
 	static String workflowPathAndName;
 	static String outfilePathAndName;
+	static String infoPathAndName;
 	static LinkedHashMap<String, ArrayList<String>> parameters;
+	static String author = new String("");
+	static String date = new String("");
+	static String comments = new String("");
 	static Document document;
 	static Element racine;
 
 	public static void main(String[] args) {
 		// RETRIEVE FILE NAME AND PATH
-		if (args.length != 2) {
+		if (args.length != 3) {
 			System.out
-					.println("This program needs only two arguments, one for the workflow file path, and the second for the outfile path");
+					.println("This program needs only three arguments, one for the workflow file path, the second for the param outfile path, and the third one for the information outfile path");
 			return;
 		}
 		workflowPathAndName = args[0];
@@ -47,7 +51,15 @@ public class Main {
 			new FileWriter(outfilePathAndName);
 		} catch (Exception e) { // If the output file can not be created
 			System.out
-					.println("The output file (second argument) can not be created !");
+					.println("The output file (second argument) to store the parameters can not be created !");
+			return;
+		}
+		infoPathAndName = args[2];
+		try {
+			new FileWriter(infoPathAndName);
+		} catch (Exception e) { // If the output file can not be created
+			System.out
+					.println("The output file (third argument) to store the information can not be created !");
 			return;
 		}
 
@@ -66,8 +78,8 @@ public class Main {
 		Enumeration<? extends ZipEntry> entries = zipFile.entries();
 		while (entries.hasMoreElements()) {
 			ZipEntry entry = entries.nextElement();
-			// SEARCH THE FILE CONTAINING THE PARAMETERS
 			
+			// SEARCH THE FILE CONTAINING THE PARAMETERS
 			if (entry.getName().equals(new File(workflowPathAndName).getName().substring(0, new File(workflowPathAndName).getName().lastIndexOf("."))+"/workflow.knime")) {
 
 				// OPEN THE FILE AS XML FILE
@@ -79,9 +91,6 @@ public class Main {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
-
-				
 
 				// PARSE THE XML FILE
 				racine = document.getRootElement();
@@ -148,6 +157,66 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		
+		
+		// OPEN THE ZIP ARCHIVE A SECOND TIME TO RETRIEVE ENTRIES
+		entries = zipFile.entries();
+		while (entries.hasMoreElements()) {
+			ZipEntry entry = entries.nextElement();
+			
+			// SEARCH THE FILE CONTAINING THE INFORMATION
+			if (entry.getName().equals(new File(workflowPathAndName).getName().substring(0, new File(workflowPathAndName).getName().lastIndexOf("."))+"/workflowset.meta")) {
+
+				// OPEN THE FILE AS XML FILE
+				SAXBuilder sxb = new SAXBuilder();
+				try {
+					document = sxb.build(zipFile.getInputStream(entry));
+				} catch (JDOMException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				// PARSE THE XML FILE
+				racine = document.getRootElement();
+				List<Element> configs = racine.getChildren();
+				for (Element e : configs) {
+					// RETRIEVE THE ELEMENT
+					if (e.getAttributeValue("name").equalsIgnoreCase("Author")) {
+						author = e.getText();
+					}
+					else if (e.getAttributeValue("name").equalsIgnoreCase("Creation Date")) {
+						date = e.getText();
+					}
+					else if (e.getAttributeValue("name").equalsIgnoreCase("Comments")) {
+						comments = e.getText();
+					}
+				}
+			break;
+			}
+		}
+
+		// WRITE THE INFORMATION INTO ANOTHER FILE
+		try {
+			FileWriter writer = new FileWriter(infoPathAndName);
+			if (author.equals("") || date.equals("") || comments.equals("")) {
+				writer.append("There is no description available.");
+			}
+			else {
+				writer.append(author); // Author
+				writer.append("\n");
+				writer.append(date);
+				writer.append("\n");
+				writer.append(comments);
+			}
+			writer.flush();
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		
 
 	}
 
