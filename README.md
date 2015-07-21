@@ -4,7 +4,7 @@ Java executable which retrieves parameters and information from a [KNIME](https:
 
 ### Command line execution
 ```bash
-java -jar KnimeParameterRetriever.jar Example.zip /tmp/param.dat /tmp/metainf.dat
+java -jar KnimeParameterRetriever-2.0.jar Example.zip /tmp/param.dat /tmp/metainf.dat
 ```
 
 Download the [lastest release](https://github.com/pidupuis/KnimeParameterRetriever/releases/latest).
